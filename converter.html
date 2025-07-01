@@ -1,0 +1,207 @@
+<html lang="en">
+<head>
+    <style>
+        * {
+            background-color: #1C1A25;
+            color: #CDBDFB;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .flexy {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-content: center;
+        }
+
+        .vertical {
+            flex-direction: column;
+        }
+
+        .horizontal {
+            flex-direction: row;
+        }
+
+        label{
+            font-size: 30px;
+            padding-bottom: 1vh;
+            font-family: sans-serif;
+        }
+
+        textarea {
+            border-width: 5px;
+            border-color: #CBC3DA;
+            height: 55vh;
+            width: 25vw;
+            font-size: 20px;
+            font-weight: lighter;
+        }
+
+        textarea:focus {
+            outline: none;
+        }
+
+    </style>
+
+    <script>
+        let lastParse;
+        function addInput(){
+            let input = document.querySelector("#input").value;
+
+            if(input !== lastParse){
+                lastParse = input;
+                let res = [];
+
+                input = input.split(/\r?\n/); //Split on New Line (UNIX Support)
+                for(let line of input){
+                    line = line.toString().trim();
+                    if(line.match(/^\d/)){ //Starts With Number
+                        line = line.split(" ");
+
+                        res.push(
+                            [
+                                line[0].trim() + "x", //Number of Cards
+                                line.slice(1, -2).join(" "), //Name of Card
+                                setMatch(line.slice(-2))
+                            ].join(" ")
+                        );
+                    }
+                }
+
+                document.querySelector("#output").value = res.join("\r\n");
+            }
+        }
+
+        let mapping = {
+            "DRI": {
+                name: "SV10",
+                divider: "-",
+                isNumber: true
+            },
+            "JTG": {
+                name: "SV9",
+                divider: "-",
+                isNumber: true
+            },
+            "PRE": {
+                name: "SV8PT5",
+                divider: "-",
+                isNumber: true
+            },
+            "SSP": {
+                name: "SV8",
+                divider: "-",
+                isNumber: true
+            },
+            "SCR": {
+                name: "SV7",
+                divider: "-",
+                isNumber: true
+            },
+            "SFA": {
+                name: "SV6PT5",
+                divider: "-",
+                isNumber: true
+            },
+            "TWM": {
+                name: "SV6",
+                divider: "-",
+                isNumber: true
+            },
+            "TEF": {
+                name: "SV5",
+                divider: "-",
+                isNumber: true
+            },
+            "PAF": {
+                name: "SV4PT5",
+                divider: "-",
+                isNumber: true
+            },
+            "PAR": {
+                name: "SV4",
+                divider: "-",
+                isNumber: true
+            },
+            "MEW": {
+                name: "SV3PT5",
+                divider: "-",
+                isNumber: true
+            },
+            "OBF": {
+                name: "SV3",
+                divider: "-",
+                isNumber: true
+            },
+            "PAL": {
+                name: "SV2",
+                divider: "-",
+                isNumber: true
+            },
+            "SVI": {
+                name: "SV1",
+                divider: "-",
+                isNumber: true
+            },
+
+            "SVP": {
+                name: "SVP",
+                divider: "-",
+                isNumber: true
+            },
+        }
+        function setMatch(data){
+            let curMap = mapping[data[0]]
+            if(!curMap){
+                console.log("set not found for "+ data);
+                return "("+ data[0] + "-" + data[1] +")";
+            }
+            return "("+ curMap.name + curMap.divider + Number(data[1])+")"
+        }
+    </script>
+
+    <title>
+        Skye's Deck Converter
+    </title>
+</head>
+
+<body class="flexy vertical">
+<div style="padding-top: 2vh">
+    <h1>
+        Skye's Deck Converter <br>
+        (Limitless -> Untap)
+    </h1>
+</div>
+<div class="flexy horizontal">
+    <div class="flexy vertical">
+        <label>
+            Input
+        </label>
+        <textarea id="input" onkeyup="addInput()"></textarea>
+    </div>
+
+    <div class="flexy vertical">
+        <label>
+            Output
+        </label>
+        <textarea id="output"></textarea>
+    </div>
+</div>
+<div>
+    <p>
+        Warning: Doesn't work for any type of energy nor for cards with inconsistent set names on untap (ex. Boss's Orders). Always check deck after importing
+    </p>
+</div>
+</body>
+</html>
